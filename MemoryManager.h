@@ -1,6 +1,6 @@
 #include <sys/mman.h>
 
-typedef struct __mmaloc_t
+typedef struct __mmalloc_t
 {
     // stuff
 } mmalloc_t;
