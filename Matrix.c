@@ -77,5 +77,6 @@ void display(matrix* mat)
         printf("%f", str[i * mat->num_cols]);
         for (int j = 0; j < mat->num_cols; j++)
             printf(", %f", str[i * mat->num_cols + j]);
+        printf("\n");
     }
 }
