@@ -1,13 +1,15 @@
 #include "Matrix.h"
 
+#include "MemoryManager.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 
 matrix* matrix_malloc(int num_rows, int num_cols)
 {
-    matrix* mat = (matrix *) malloc(sizeof(matrix));
+    matrix* mat = (matrix *) mem_manager_malloc(sizeof(matrix));
 
-    elements = (double *) malloc(num_rows * num_cols * sizeof(double));
+    elements = (double *) mem_manager_malloc(num_rows * num_cols * sizeof(double));
 
     mat->elements = elements;
     mat->num_rows = num_rows;
@@ -19,8 +21,8 @@ matrix* matrix_malloc(int num_rows, int num_cols)
 void matrix_free(matrix* mat)
 {
     // NOTE: Check this!!
-    free(mat->elements);
-    free(mat);
+    mem_manager_free(mat->elements);
+    mem_manager_free(mat);
 }
 
 void set_element(matrix* mat, int row, int col, double val)
