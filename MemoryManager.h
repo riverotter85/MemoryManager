@@ -23,7 +23,7 @@ void init_mem(int free_space_size);
 // called by malloc
 // find a free space chunk large enough for the requested allocation
 // obtain some memory from that chunk
-// ?? locate_split(??);
+mmfree_t* locate_split(int size);
 
 // called by free
 // locate the freed memory insert position so free space nodes are sorted by address

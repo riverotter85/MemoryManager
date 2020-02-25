@@ -25,6 +25,17 @@ void init_mem(int free_space_size)
     head->next = NULL;
 }
 
-// ?? locate_split(??);
+__mmfree_t* locate_split(int size)
+{
+    mmfree_t* curr = head;
+    while (curr != NULL)
+    {
+        if (curr->size >= size)
+            break;
+        curr = curr->next;
+    }
+
+    return curr;
+}
 
 // ?? find_sorted_location(??);
