@@ -2,12 +2,14 @@
 
 typedef struct __mmalloc_t
 {
-    // stuff
+    int size;
+    int magic;
 } mmalloc_t;
 
 typedef struct __mmfree_t
 {
-    // stuff
+    int size;
+    struct __mmfree_t* next;
 } mmfree_t;
 
 mmfree_t* head;
