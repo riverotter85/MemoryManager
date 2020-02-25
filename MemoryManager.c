@@ -14,7 +14,13 @@ void mem_manager_free(void* ptr)
 
 void traverse_free_list()
 {
-    //stuff
+    mmfree_t* curr = head;
+    while (curr != NULL)
+    {
+        // NOTE: May want to change this!!!!
+        printf("curr: %p\n", curr + sizeof(mmfree_t));
+        printf("size: %d\n", curr->size);
+    }
 }
 
 void init_mem(int free_space_size)
@@ -25,6 +31,7 @@ void init_mem(int free_space_size)
     head->next = NULL;
 }
 
+// Implemented using First Fit
 __mmfree_t* locate_split(int size)
 {
     mmfree_t* curr = head;
