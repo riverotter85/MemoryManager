@@ -7,6 +7,9 @@
 
 matrix* matrix_malloc(int num_rows, int num_cols)
 {
+    if (num_rows <= 0 || num_cols <= 0)
+        return NULL;
+
     matrix* mat = (matrix *) mem_manager_malloc(sizeof(matrix));
 
     elements = (double *) mem_manager_malloc(num_rows * num_cols * sizeof(double));
@@ -68,8 +71,11 @@ matrix* multiply(matrix* left, matrix* right)
 
 void display(matrix* mat)
 {
-    if (mat->num_rows == 0 || mat->num_cols == 0)
+    if (!mat)
+    {
+        printf("NULL!\n");
         return;
+    }
 
     int arr_size = mat->num_cols * 8; // NOTE: May want to tweak this!
     char str[arr_size];

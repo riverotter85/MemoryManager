@@ -53,7 +53,7 @@ void traverse_free_list()
 
 void init_mem(int free_space_size)
 {
-    head = (mmfree_t *) mmap(NULL, free_space_size, PROT_READ|PROT_WRITE,
+    head = mmap(NULL, free_space_size, PROT_READ|PROT_WRITE,
                 MAP_ANON|MAP_PRIVATE, -1, 0);
     head->size = free_space_size - sizeof(mmfree_t);
     head->next = NULL;
