@@ -59,6 +59,11 @@ void init_mem(int free_space_size)
     head->next = NULL;
 }
 
+void free_mem(int space_size)
+{
+    munmap(head, space_size);
+}
+
 // Implemented using First Fit
 mmfree_t* locate_split(int size)
 {

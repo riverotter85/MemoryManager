@@ -20,6 +20,7 @@ void mem_manager_free(void* ptr);
 // traverse the free space list starting from the head, printing out info (for debugging)
 void traverse_free_list();
 void init_mem(int free_space_size);
+void free_mem(int space_size);
 
 // called by malloc
 // find a free space chunk large enough for the requested allocation
