@@ -1,6 +1,7 @@
 #include "MemoryManager.h"
 
 #include <sys/mman.h>
+#include <stdio.h>
 #include <stdlib.h>
 
 void* mem_manager_malloc(int size)
@@ -11,7 +12,7 @@ void* mem_manager_malloc(int size)
     if (split = locate_split(size - sizeof(mmalloc_t)))
     {
         split->size -= size;
-        hptr = (mmalloc_t *) split + sizeof(mmfree_t) + split->size;
+        mmalloc_t* hptr = (mmalloc_t *) split + sizeof(mmfree_t) + split->size;
         hptr->size = size - sizeof(mmalloc_t);
         hptr->magic = 1234567; // May want to change!!
         ptr = hptr + sizeof(mmalloc_t); // NOTE: Check this!!!
@@ -26,7 +27,7 @@ void mem_manager_free(void* ptr)
 {
     mmalloc_t* hptr = (mmalloc_t *) ptr - sizeof(mmalloc_t);
     mmfree_t* sorted_loc = find_sorted_location(hptr);
-    if (sorted_loc + sizeof(mmfree_t) + sorted_loc->size == hptr)
+    if ((void *) (sorted_loc + sizeof(mmfree_t) + sorted_loc->size) == (void *) hptr)
     {
         sorted_loc->size += hptr->size + sizeof(mmalloc_t);
     }
@@ -85,7 +86,7 @@ mmfree_t* find_sorted_location(void* ptr)
     mmfree_t* curr = head;
     while (curr != NULL)
     {
-        if (curr->next > ptr)
+        if ((void *) curr->next > (void *) ptr)
             break;
         curr = curr->next;
     }

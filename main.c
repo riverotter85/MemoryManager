@@ -8,8 +8,8 @@
 
 int main()
 {
-    printf("mmalloc header size: %d\n", sizeof(mmalloc_t));
-    printf("mmfree node size: %d\n", sizeof(mmfree_t));
+    printf("mmalloc header size: %d\n", (int) sizeof(mmalloc_t));
+    printf("mmfree node size: %d\n", (int) sizeof(mmfree_t));
 
     init_mem(FREE_SPACE_BYTES);
 

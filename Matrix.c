@@ -12,7 +12,7 @@ matrix* matrix_malloc(int num_rows, int num_cols)
 
     matrix* mat = (matrix *) mem_manager_malloc(sizeof(matrix));
 
-    elements = (double *) mem_manager_malloc(num_rows * num_cols * sizeof(double));
+    double* elements = (double *) mem_manager_malloc(num_rows * num_cols * sizeof(double));
 
     mat->elements = elements;
     mat->num_rows = num_rows;
@@ -82,9 +82,9 @@ void display(matrix* mat)
 
     for (int i = 0; i < mat->num_rows; i++)
     {
-        printf("%f", str[i * mat->num_cols]);
+        printf("%d", str[i * mat->num_cols]);
         for (int j = 0; j < mat->num_cols; j++)
-            printf(", %f", str[i * mat->num_cols + j]);
+            printf(", %d", str[i * mat->num_cols + j]);
         printf("\n");
     }
 }
