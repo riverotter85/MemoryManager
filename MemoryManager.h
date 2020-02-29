@@ -1,4 +1,5 @@
-#include <sys/mman.h>
+#ifndef _MEMORY_MANAGER_H
+#define _MEMORY_MANAGER_H
 
 typedef struct __mmalloc_t
 {
@@ -27,4 +28,6 @@ mmfree_t* locate_split(int size);
 
 // called by free
 // locate the freed memory insert position so free space nodes are sorted by address
-// ?? find_sorted_location(??);
+mmfree_t* find_sorted_location(void* ptr);
+
+#endif

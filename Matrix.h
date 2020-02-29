@@ -1,3 +1,6 @@
+#ifndef _MATRIX_H
+#define _MATRIX_H
+
 typedef struct __matrix
 {
     int num_rows;
@@ -11,3 +14,5 @@ void set_element(matrix* mat, int row, int col, double val);
 double get_element(matrix* mat, int row, int col);
 matrix* multiply(matrix* left, matrix* right);
 void display(matrix* mat);
+
+#endif
