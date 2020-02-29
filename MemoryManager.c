@@ -8,13 +8,13 @@ void* mem_manager_malloc(int size)
     void* ptr = NULL;
 
     mmfree_t* split;
-    if (split = locate_split(size))
+    if (split = locate_split(size - sizeof(mmalloc_t)))
     {
         split->size -= size;
-        hptr = (mmfree_t *) split + split->size;
-        hptr->size = size - sizeof(mmfree_t);
-        hptr->next = NULL;
-        ptr = hptr + sizeof(mmfree_t); // NOTE: Check this!!!
+        hptr = (mmalloc_t *) split + sizeof(mmfree_t) + split->size;
+        hptr->size = size - sizeof(mmalloc_t);
+        hptr->magic = 1234567; // May want to change!!
+        ptr = hptr + sizeof(mmalloc_t); // NOTE: Check this!!!
     }
 
     return ptr;
@@ -24,16 +24,19 @@ void* mem_manager_malloc(int size)
 // This stuff is extremely importaaaannnnttt!!!!
 void mem_manager_free(void* ptr)
 {
-    mmfree_t* hptr = (mmfree_t *) ptr - sizeof(mmfree_t);
+    mmalloc_t* hptr = (mmalloc_t *) ptr - sizeof(mmalloc_t);
     mmfree_t* sorted_loc = find_sorted_location(hptr);
     if (sorted_loc + sizeof(mmfree_t) + sorted_loc->size == hptr)
     {
-        sorted_loc->size += hptr->size + sizeof(mmfree_t);
+        sorted_loc->size += hptr->size + sizeof(mmalloc_t);
     }
     else
     {
-        hptr->next = sorted_loc->next;
-        sorted_loc->next = hptr;
+        int size = hptr->size;
+        mmfree_t* new_free = (mmfree_t *) ptr - sizeof(mmalloc_t);
+        new_free->size = size + sizeof(mmalloc_t) - sizeof(mmfree_t);
+        new_free->next = sorted_loc->next;
+        sorted_loc->next = new_free;
     }
 }
 
