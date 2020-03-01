@@ -10,9 +10,14 @@ matrix* matrix_malloc(int num_rows, int num_cols)
     if (num_rows <= 0 || num_cols <= 0)
         return NULL;
 
-    matrix* mat = (matrix *) mem_manager_malloc(sizeof(matrix));
+    //matrix* mat = (matrix *) mem_manager_malloc(sizeof(matrix));
+    matrix* mat = (matrix *) malloc(sizeof(matrix));
 
-    double* elements = (double *) mem_manager_malloc(num_rows * num_cols * sizeof(double));
+    //double* elements = (double *) mem_manager_malloc(num_rows * num_cols * sizeof(double));
+    double* elements = (double *) malloc(num_rows * num_cols * sizeof(double));
+
+    for (int i = 0; i < num_rows * num_cols; i++)
+        elements[i] = 0;
 
     mat->elements = elements;
     mat->num_rows = num_rows;
@@ -24,8 +29,10 @@ matrix* matrix_malloc(int num_rows, int num_cols)
 void matrix_free(matrix* mat)
 {
     // NOTE: Check this!!
-    mem_manager_free(mat->elements);
-    mem_manager_free(mat);
+    //mem_manager_free(mat->elements);
+    //mem_manager_free(mat);
+    free(mat->elements);
+    free(mat);
 }
 
 void set_element(matrix* mat, int row, int col, double val)
@@ -50,12 +57,12 @@ matrix* multiply(matrix* left, matrix* right)
     int right_cols = right->num_cols;
     matrix* result = matrix_malloc(left_rows, right_cols);
 
-    for (int i = 1; i <= left_rows; i++)
+    for (int i = 0; i < left_rows; i++)
     {
-        for (int j = 1; j <= right_cols; j++)
+        for (int j = 0; j < right_cols; j++)
         {
             double val = 0;
-            for (int k = 1; k <= left_cols; k++)
+            for (int k = 0; k < left_cols; k++)
             {
                 double element_left = get_element(left, i, k);
                 double element_right = get_element(right, k, j);
@@ -80,11 +87,14 @@ void display(matrix* mat)
     int arr_size = mat->num_cols * 8; // NOTE: May want to tweak this!
     char str[arr_size];
 
+    printf("Rows: %d\n", mat->num_rows);
+    printf("Cols: %d\n", mat->num_cols);
+
     for (int i = 0; i < mat->num_rows; i++)
     {
-        printf("%d", str[i * mat->num_cols]);
-        for (int j = 0; j < mat->num_cols; j++)
-            printf(", %d", str[i * mat->num_cols + j]);
+        printf("%f", mat->elements[i * mat->num_cols]);
+        for (int j = 1; j < mat->num_cols; j++)
+            printf(", %f", mat->elements[i * mat->num_cols + j]);
         printf("\n");
     }
 }
