@@ -10,11 +10,11 @@ matrix* matrix_malloc(int num_rows, int num_cols)
     if (num_rows <= 0 || num_cols <= 0)
         return NULL;
 
-    //matrix* mat = (matrix *) mem_manager_malloc(sizeof(matrix));
-    matrix* mat = (matrix *) malloc(sizeof(matrix));
+    matrix* mat = (matrix *) mem_manager_malloc(sizeof(matrix));
+    //matrix* mat = (matrix *) malloc(sizeof(matrix));
 
-    //double* elements = (double *) mem_manager_malloc(num_rows * num_cols * sizeof(double));
-    double* elements = (double *) malloc(num_rows * num_cols * sizeof(double));
+    double* elements = (double *) mem_manager_malloc(num_rows * num_cols * sizeof(double));
+    //double* elements = (double *) malloc(num_rows * num_cols * sizeof(double));
 
     for (int i = 0; i < num_rows * num_cols; i++)
         elements[i] = 0;
@@ -29,22 +29,26 @@ matrix* matrix_malloc(int num_rows, int num_cols)
 void matrix_free(matrix* mat)
 {
     // NOTE: Check this!!
-    //mem_manager_free(mat->elements);
-    //mem_manager_free(mat);
-    free(mat->elements);
-    free(mat);
+    mem_manager_free(mat->elements);
+    mem_manager_free(mat);
+    //free(mat->elements);
+    //free(mat);
 }
 
 void set_element(matrix* mat, int row, int col, double val)
 {
-    // NOTE: Check this!!
+    if (row < 0 || row >= mat->num_rows || col < 0 || col >= mat->num_cols)
+        return;
+
     int index = row * mat->num_cols + col;
     mat->elements[index] = val;
 }
 
 double get_element(matrix* mat, int row, int col)
 {
-    // NOTE: Check this!!
+    if (row < 0 || row >= mat->num_rows || col < 0 || col >= mat->num_cols)
+        return 0;
+
     int index = row * mat->num_cols + col;
     return mat->elements[index];
 }
@@ -83,9 +87,6 @@ void display(matrix* mat)
         printf("NULL!\n");
         return;
     }
-
-    int arr_size = mat->num_cols * 8; // NOTE: May want to tweak this!
-    char str[arr_size];
 
     printf("Rows: %d\n", mat->num_rows);
     printf("Cols: %d\n", mat->num_cols);
