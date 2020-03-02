@@ -12,13 +12,17 @@ void* mem_manager_malloc(int size)
     if (split = locate_split(size + sizeof(mmalloc_t)))
     {
         split->size -= size + sizeof(mmalloc_t);
-        //mmalloc_t* hptr = (mmalloc_t *) split + sizeof(mmfree_t) + split->size;
-        mmalloc_t* hptr = mmap(split + sizeof(mmfree_t) + split->size, sizeof(mmalloc_t),
-                PROT_READ|PROT_WRITE, MAP_ANON|MAP_PRIVATE, -1, 0);
-        hptr->size = size;
+        mmalloc_t* hptr = (mmalloc_t *) (((size_t) split) + sizeof(mmfree_t) + split->size);
+        //mmalloc_t* hptr = mmap(split + sizeof(mmfree_t) + split->size, sizeof(mmalloc_t),
+        //        PROT_READ|PROT_WRITE, MAP_ANON|MAP_PRIVATE, -1, 0);
+        printf("Split %p\n", split);
+        printf("Split size %d\n", split->size);
+        printf("mmfree_t size: %d\n", sizeof(mmfree_t));
         printf("Memory allocated!: %p\n", hptr);
+        printf("Difference: %d\n", (int) ((void *) hptr - (void *) split));
+        hptr->size = size;
         hptr->magic = 1234567; // May want to change!!
-        ptr = hptr + sizeof(mmalloc_t); // NOTE: Check this!!!
+        ptr = (void *) ((size_t) hptr) + sizeof(mmalloc_t); // NOTE: Check this!!!
     }
 
     return ptr;
