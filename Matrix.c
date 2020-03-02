@@ -88,6 +88,8 @@ void display(matrix* mat)
         return;
     }
 
+    printf("Matrix Addr: %p\n", mat);
+    printf("Elements Addr: %p\n", mat->elements);
     printf("Rows: %d\n", mat->num_rows);
     printf("Cols: %d\n", mat->num_cols);
 
