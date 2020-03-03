@@ -1,3 +1,13 @@
+/*
+    Program: MemoryManager
+    Author: Logan Davis
+    Last Modified: 3/03/2020
+    Description: A custom implementation for malloc that allocates
+        and frees memory from a pre-allocated space. This program
+        is meant to demonstrate the intricacies of memory management
+        and how it can be utilized efficiently.
+*/
+
 #include "MemoryHeader.h"
 #include "Matrix.h"
 
@@ -70,7 +80,39 @@ int main(int argc, char* argv[])
         matrix_free(m_list[i]);
     }
     traverse_free_list();
-    
+
+    // Test matrix multiplication (normal case)
+    matrix* m1 = matrix_malloc(8, 4);
+    matrix* m2 = matrix_malloc(4, 8);
+    matrix* m3 = multiply(m1, m2);
+
+    display(m1);
+    display(m2);
+    display(m3);
+    traverse_free_list();
+
+    matrix_free(m1);
+    matrix_free(m2);
+    matrix_free(m3);
+
+    traverse_free_list();
+
+    // Matrix multiplication with gigantic matrices (should not work)
+    m1 = matrix_malloc(50000, 400);
+    m2 = matrix_malloc(400, 50000);
+    m3 = multiply(m1, m2);
+
+    display(m1);
+    display(m2);
+    display(m3);
+    traverse_free_list();
+
+    matrix_free(m1);
+    matrix_free(m2);
+    matrix_free(m3);
+
+    traverse_free_list();
+
     mem_manager_free(m_list);
     traverse_free_list();
 
