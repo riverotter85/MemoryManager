@@ -11,10 +11,7 @@ matrix* matrix_malloc(int num_rows, int num_cols)
         return NULL;
 
     matrix* mat = (matrix *) mem_manager_malloc(sizeof(matrix));
-    //matrix* mat = (matrix *) malloc(sizeof(matrix));
-
     double* elements = (double *) mem_manager_malloc(num_rows * num_cols * sizeof(double));
-    //double* elements = (double *) malloc(num_rows * num_cols * sizeof(double));
 
     for (int i = 0; i < num_rows * num_cols; i++)
         elements[i] = 0;
@@ -28,11 +25,8 @@ matrix* matrix_malloc(int num_rows, int num_cols)
 
 void matrix_free(matrix* mat)
 {
-    // NOTE: Check this!!
     mem_manager_free(mat->elements);
     mem_manager_free(mat);
-    //free(mat->elements);
-    //free(mat);
 }
 
 void set_element(matrix* mat, int row, int col, double val)

@@ -13,23 +13,14 @@ void* mem_manager_malloc(int size)
     {
         split->size -= size + sizeof(mmalloc_t);
         mmalloc_t* hptr = (mmalloc_t *) (((size_t) split) + sizeof(mmfree_t) + split->size);
-        //mmalloc_t* hptr = mmap(split + sizeof(mmfree_t) + split->size, sizeof(mmalloc_t),
-        //        PROT_READ|PROT_WRITE, MAP_ANON|MAP_PRIVATE, -1, 0);
-        printf("Split %p\n", split);
-        printf("Split size %d\n", split->size);
-        printf("mmfree_t size: %d\n", sizeof(mmfree_t));
-        printf("Memory allocated!: %p\n", hptr);
-        printf("Difference: %d\n", (int) ((void *) hptr - (void *) split));
         hptr->size = size;
-        hptr->magic = 1234567; // May want to change!!
-        ptr = (void *) ((size_t) hptr) + sizeof(mmalloc_t); // NOTE: Check this!!!
+        hptr->magic = 1234567;
+        ptr = (void *) ((size_t) hptr) + sizeof(mmalloc_t);
     }
 
     return ptr;
 }
 
-// NOTE: Also make sure to check this bad boy!!
-// This stuff is extremely importaaaannnnttt!!!!
 void mem_manager_free(void* ptr)
 {
     mmalloc_t* hptr = (mmalloc_t *) (((size_t) ptr) - sizeof(mmalloc_t));
@@ -38,25 +29,13 @@ void mem_manager_free(void* ptr)
     printf("Magic: %d\n", hptr->magic);
 
     mmfree_t* sorted_loc = find_sorted_location(hptr);
-    printf("Sorted Location: %p\n", (void *) sorted_loc);
-    printf("Sorted Location Offset: %p\n", (void *) (((size_t) sorted_loc) + sorted_loc->size));
-    printf("Header Pointer Location: %p\n", (void *) hptr);
-
     if ((void *) (((size_t) sorted_loc) + sizeof(mmfree_t) + sorted_loc->size) == (void *) hptr)
     {
-        printf("Yo!\n");
-        //munmap(hptr, sizeof(mmalloc_t));
         sorted_loc->size += hptr->size + sizeof(mmalloc_t);
     }
     else
     {
-        //printf("Yo!\n");
-        //munmap(hptr, sizeof(mmalloc_t));
-        //mmfree_t* new_free = (mmfree_t *) ((size_t) ptr) - sizeof(mmalloc_t);
         mmfree_t* new_free = (mmfree_t *) hptr;
-        printf("New free location: %p\n", new_free);
-        //mmfree_t* new_free = mmap(hptr, sizeof(mmfree_t),
-        //        PROT_READ|PROT_WRITE, MAP_ANON|MAP_PRIVATE, -1, 0);
         new_free->size = hptr->size + sizeof(mmalloc_t) - sizeof(mmfree_t);
         new_free->next = sorted_loc->next;
         sorted_loc->next = new_free;
@@ -67,11 +46,8 @@ void mem_manager_free(void* ptr)
     mmfree_t* next = sorted_loc->next;
     if ((void *) (((size_t) sorted_loc) + sizeof(mmfree_t) + sorted_loc->size) == (void *) next)
     {
-        printf("Howdy!\n");
-        int next_size = next->size;
         sorted_loc->next = next->next;
-        //munmap(next, sizeof(mmfree_t));
-        sorted_loc->size += next_size + sizeof(mmfree_t);
+        sorted_loc->size += next->size + sizeof(mmfree_t);
     }
 }
 
@@ -126,17 +102,13 @@ mmfree_t* locate_split(int size)
     return curr;
 }
 
-// NOTE: Make sure that the calculations for this function
-// is correct! This is super important!!!
 mmfree_t* find_sorted_location(void* ptr)
 {
     mmfree_t* curr = head;
     while (curr->next != NULL)
     {
-        if ((void *) curr->next > (void *) ptr) {
-            printf("Found sorted location for address %p: %p\n", ptr, curr);
+        if ((void *) curr->next > (void *) ptr)
             break;
-        }
         curr = curr->next;
     }
 

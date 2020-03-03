@@ -31,15 +31,15 @@ int main()
 
     traverse_free_list();
 
-    matrix_free(m1);
-    traverse_free_list();
     matrix_free(m2);
+    traverse_free_list();
+    matrix_free(m1);
 
     traverse_free_list();
 
-    matrix_free(m3);
-    traverse_free_list();
     matrix_free(m4);
+    traverse_free_list();
+    matrix_free(m3);
 
     traverse_free_list();
 
