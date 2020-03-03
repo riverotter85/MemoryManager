@@ -6,23 +6,28 @@
 
 void* mem_manager_malloc(int size)
 {
-    void* ptr = NULL;
-
+    // Check to see if the requested amount (plus allocated header size)
+    // is available
     mmfree_t* split;
-    if (split = locate_split(size + sizeof(mmalloc_t)))
-    {
-        split->size -= size + sizeof(mmalloc_t);
-        mmalloc_t* hptr = (mmalloc_t *) (((size_t) split) + sizeof(mmfree_t) + split->size);
-        hptr->size = size;
-        hptr->magic = 1234567;
-        ptr = (void *) ((size_t) hptr) + sizeof(mmalloc_t);
-    }
+    if (!(split = locate_split(size + sizeof(mmalloc_t))))
+        return NULL;
 
+    split->size -= size + sizeof(mmalloc_t);
+    mmalloc_t* hptr = (mmalloc_t *) (((size_t) split) + sizeof(mmfree_t) + split->size);
+    hptr->size = size;
+    hptr->magic = 1234567;
+
+    // Retrieve space attached to header
+    void* ptr = (void *) ((size_t) hptr) + sizeof(mmalloc_t);
     return ptr;
 }
 
 void mem_manager_free(void* ptr)
 {
+    if (!ptr) // NULL pointer
+        return;
+
+    // Retrieve the allocated header and make sure everything is intact
     mmalloc_t* hptr = (mmalloc_t *) (((size_t) ptr) - sizeof(mmalloc_t));
     printf("Node Freed!!\n");
     printf("#########################\n");
@@ -32,10 +37,12 @@ void mem_manager_free(void* ptr)
     printf("#########################\n\n");
 
     mmfree_t* sorted_loc = find_sorted_location(hptr);
+    // Directly adjacent node found to the left! Coalesce freed space into node.
     if ((void *) (((size_t) sorted_loc) + sizeof(mmfree_t) + sorted_loc->size) == (void *) hptr)
     {
         sorted_loc->size += hptr->size + sizeof(mmalloc_t);
     }
+    // Otherwise create new free node attached to space (including leftover mmalloc header space)
     else
     {
         mmfree_t* new_free = (mmfree_t *) hptr;
@@ -47,6 +54,7 @@ void mem_manager_free(void* ptr)
     }
     
     mmfree_t* next = sorted_loc->next;
+    // Directly adjacent node found to the right! Coalesce right node into current node.
     if ((void *) (((size_t) sorted_loc) + sizeof(mmfree_t) + sorted_loc->size) == (void *) next)
     {
         sorted_loc->next = next->next;
@@ -105,6 +113,7 @@ mmfree_t* locate_split(int size)
     return curr;
 }
 
+// Finds the closest (sorted) node to the left of the provided pointer
 mmfree_t* find_sorted_location(void* ptr)
 {
     mmfree_t* curr = head;
