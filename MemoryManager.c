@@ -24,9 +24,12 @@ void* mem_manager_malloc(int size)
 void mem_manager_free(void* ptr)
 {
     mmalloc_t* hptr = (mmalloc_t *) (((size_t) ptr) - sizeof(mmalloc_t));
+    printf("Node Freed!!\n");
+    printf("#########################\n");
     printf("Curr: %p\n", hptr);
     printf("Size: %d\n", hptr->size);
-    printf("Magic: %d\n", hptr->magic);
+    printf("Magic: %d\n\n", hptr->magic);
+    printf("#########################\n\n");
 
     mmfree_t* sorted_loc = find_sorted_location(hptr);
     if ((void *) (((size_t) sorted_loc) + sizeof(mmfree_t) + sorted_loc->size) == (void *) hptr)
